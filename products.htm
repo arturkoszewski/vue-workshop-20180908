@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vue.js Start</title>
+  <style>
+    #app {
+      font-family: 'Avenir', Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #2c3e50;
+      margin-top: 60px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Vue.js</h1>
+
+  <p>is ready to start an adventure</p>
+
+  <div id="app">
+    <h2>My awesome list</h2>
+    <ul>
+      <!-- 2. Then, we're using built-in v-for directive to iterate over products -->
+      <li v-for="p in products">{{ p.name }}<button v-on:click="removeItem(p.id)">REMOVE</button></li>
+    </ul>
+    <!-- 5. v-if can be helpful with conditional statements -->
+    <p v-if="!products.length">No products!</p>
+    <!-- 6. v-on adds an handler and :click is the name of the event, then goes the function to invoke -->
+    <button v-on:click="removeLast()">Remove last item</button>
+
+    <button v-on:click="addItem(product)">Add certain item</button>
+
+    <input v-model="product" placeholder="new item" />
+    <button v-on:click="addItemFromInput(product)" style="display: inline;">Add item from input</button>
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.13/dist/vue.js"></script>
+  <script>
+    const app = new Vue({
+      el: '#app',
+      data: {
+        //7/ 1. We can define any JavaScript some array of objects
+        product:null,
+        products: [{
+          id: 0,
+          name: 'Coffee'
+        }, {
+          id: 1,
+          name: 'Pizza'
+        }]
+      },
+      // 3. To get some events from user we can define a method in 'methods'
+      methods: {
+        //3/ 4. The important thing is to use function with execution-based context
+        removeLast() {
+          this.products.pop();
+        },
+
+        addItem(){
+            this.products.push({id: 999, name: 'Kotlet'});
+        },
+
+        addItemFromInput(product){
+            //console.log();            
+            this.products.push({id: this.products.length > 0 ? this.products[(this.products.length - 1)].id+1: 0, name: product});
+        },
+
+         removeItem(productId){
+             for (i = 0; i < this.products.length; i++) {
+                 if(this.products[i].id == productId) {
+                    this.products.splice(i, 1);
+                 }
+             }
+        },
+      }
+    })
+  </script>
+</body>
+
+</html>
