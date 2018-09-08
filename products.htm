@@ -25,15 +25,17 @@
     <h2>My awesome list</h2>
     <ul>
       <!-- 2. Then, we're using built-in v-for directive to iterate over products -->
-      <li v-for="p in products">{{ p.name }}<button v-on:click="removeItem(p.id)">REMOVE</button></li>
+      <li v-for="p in products">{{ p.name }}<button v-on:click="removeItem(p.id)" style="margin-left:20px;">REMOVE</button></li>
     </ul>
     <!-- 5. v-if can be helpful with conditional statements -->
     <p v-if="!products.length">No products!</p>
     <!-- 6. v-on adds an handler and :click is the name of the event, then goes the function to invoke -->
     <button v-on:click="removeLast()">Remove last item</button>
+    <br/>
 
     <button v-on:click="addItem(product)">Add certain item</button>
-
+    <br/>
+    
     <input v-model="product" placeholder="new item" />
     <button v-on:click="addItemFromInput(product)" style="display: inline;">Add item from input</button>
   </div>
