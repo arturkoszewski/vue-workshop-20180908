@@ -1,108 +1,77 @@
-<!--10- 1. There's a <template> part -->
 <template>
   <div id="app">
     <h2>My awesome list</h2>
-    <ul>
-      <li v-for="p in products" :key="p.id">{{ p.name }}</li>
-    </ul>
-    <p v-if="!products.length">No products!</p>
-    <button v-on:click="removeLast()">Remove last item</button>
-    <br/>
-
-    <form @submit.prevent="onSubmit()">
-      <input 
-        name="product"
-        v-model="newProduct.name" placeholder="new item" 
-        v-validate="'required|min:3'"
-      />
-      <button>Add item from input</button>
-      <div v-show="errors.has('product')">
-        {{ errors.first('product') }}
-      </div>
-    </form>
-
-    <form id="orderList" @submit.prevent="onOrderSubmit()">
-      <p>Order</p>
-      <input 
-        name="productOrdered"
-        v-model="newProductOrdered.name" placeholder="item to order" 
-        v-validate="'included:Coffee,Pizza'"
-      />
-      <button>Add item to order</button>
-      <div v-show="errors.has('productOrdered')">
-        {{ errors.first('productOrdered') }}
-      </div>
-    </form>
+    <sort-products-list @order-product-list="onOrderProductList"></sort-products-list>
+    <product-list :products="products"></product-list>
+    <!-- With @ we can listen to add-product event and assign onAddProduct-->
+    <add-product @add-product="onAddProduct"></add-product>
 
   </div>
 </template>
 
-<!--21- 2. A <script> part -->
 <script>
-import uuid from 'uuid/v4';
-// 4. Now App is not mounted itself, we're just creating a component (more on that later - hold your horses!)
+import uuid from "uuid/v4";
+import ProductList from './components/ProductList';
+import AddProduct from './components/AddProduct';
+import SortProductsList from './components/SortProductsList';
+
+
 export default {
-  name: 'app',
-  //11/ 5. Data can no longer be just an object to prevent accidental shared state
+  name: "app",
+    components: {
+    ProductList,
+    AddProduct,
+    SortProductsList
+  },
   data() {
     return {
-      products: [{
-        id: 0,
-        name: 'Coffee'
-      }, {
-        id: 1,
-        name: 'Pizza'
-      }],
-
-      newProduct:{
-        name: ''
-      },
-
-      orders:[{
-        id:0,
-        product:{name:'Prod ord'}
-      }],
-
-      newProductOrdered:{
-        name: ''
-      },
-
-    }
-  },
-  methods: {
-    removeLast() {
-      this.products.pop();
-    },
-
-    onSubmit() {
-      // 3. On the JS side we need to use yet another injected value called $validator to validate all the fields
-      this.$validator.validateAll().then(result => {
-        if (!result) {
-          return;
+      products: [
+        {
+          id: 0,
+          name: "Pizza"
+        },
+        {
+          id: 1,
+          name: "Coffee"
         }
-        this.products.push({
-          id: uuid(),
-          ...this.newProduct
-        });
-        this.newProduct.name = '';
-        // 4/ and reset validation state after adding a product
-        this.$validator.reset();
-      });
+      ],
+      newProduct: {
+        name: ""
+      }
+    };
+  },
+    methods: {
+    // onSubmit() {
+    //   this.$validator.validateAll().then(result => {
+    //     if (!result) {
+    //       return;
+    //     }
+    //     //5/ 3. However, they share some common data
+    //     this.products.push({
+    //       id: uuid(),
+    //       ...this.newProduct
+    //     });
+    //     this.newProduct.name = "";
+    //     this.$validator.reset();
+    //   });
+    // },
+    //3/ All we have to do in a method is to add product to the list
+    onAddProduct(product) {
+      this.products.push(product);
     },
 
-    onOrderSubmit() {
-      var x = true;
+    onOrderProductList() {
+      //alert('Order');
+      this.products.sort(function(a,b) {return (a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : ((b.name.toUpperCase() > a.name.toUpperCase()) ? -1 : 0);} ); 
+      //return _.orderBy(this.products, 'name', 'asc');
     }
-
-
   }
-}
+};
 </script>
 
-<!--9- 3. And <style> part -->
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
