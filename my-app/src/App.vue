@@ -8,8 +8,32 @@
     <p v-if="!products.length">No products!</p>
     <button v-on:click="removeLast()">Remove last item</button>
     <br/>
-    <input v-model="product" placeholder="new item" />
-    <button v-on:click="addItemFromInput(product)" style="display: inline;">Add item from input</button>
+
+    <form @submit.prevent="onSubmit()">
+      <input 
+        name="product"
+        v-model="newProduct.name" placeholder="new item" 
+        v-validate="'required|min:3'"
+      />
+      <button>Add item from input</button>
+      <div v-show="errors.has('product')">
+        {{ errors.first('product') }}
+      </div>
+    </form>
+
+    <form id="orderList" @submit.prevent="onOrderSubmit()">
+      <p>Order</p>
+      <input 
+        name="productOrdered"
+        v-model="newProductOrdered.name" placeholder="item to order" 
+        v-validate="'included:Coffee,Pizza'"
+      />
+      <button>Add item to order</button>
+      <div v-show="errors.has('productOrdered')">
+        {{ errors.first('productOrdered') }}
+      </div>
+    </form>
+
   </div>
 </template>
 
@@ -28,7 +52,21 @@ export default {
       }, {
         id: 1,
         name: 'Pizza'
-      }]
+      }],
+
+      newProduct:{
+        name: ''
+      },
+
+      orders:[{
+        id:0,
+        product:{name:'Prod ord'}
+      }],
+
+      newProductOrdered:{
+        name: ''
+      },
+
     }
   },
   methods: {
@@ -36,13 +74,27 @@ export default {
       this.products.pop();
     },
 
-    addItemFromInput(product){
-      //this.products.push({id: this.products.length > 0 ? this.products[(this.products.length - 1)].id+1: 0, name: product});
-      var newId = uuid();
-      console.log(newId);
-      this.products.push({id: uuid(), name: product});
-      console.log(this.products);
+    onSubmit() {
+      // 3. On the JS side we need to use yet another injected value called $validator to validate all the fields
+      this.$validator.validateAll().then(result => {
+        if (!result) {
+          return;
+        }
+        this.products.push({
+          id: uuid(),
+          ...this.newProduct
+        });
+        this.newProduct.name = '';
+        // 4/ and reset validation state after adding a product
+        this.$validator.reset();
+      });
     },
+
+    onOrderSubmit() {
+      var x = true;
+    }
+
+
   }
 }
 </script>
