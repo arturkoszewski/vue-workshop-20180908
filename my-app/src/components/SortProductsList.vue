@@ -7,20 +7,17 @@
 <script>
   export default {
     name: "SortProductsList",
-    //6/ newProduct goes to AddProduct component
     data() {
       return {
-        sortOrder: {
-          order: 'asc'
-        }
+        sortOrder: { sortOrder: true}
       }
     },
-    //3/ As well as onSubmit
     methods: {
       onSubmit() {
           this.$emit('order-product-list', {
             ...this.sortOrder
           });
+          this.sortOrder.sortOrder = !this.sortOrder.sortOrder;
         }
     }
   }

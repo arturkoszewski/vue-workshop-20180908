@@ -60,10 +60,15 @@ export default {
       this.products.push(product);
     },
 
-    onOrderProductList() {
-      //alert('Order');
-      this.products.sort(function(a,b) {return (a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : ((b.name.toUpperCase() > a.name.toUpperCase()) ? -1 : 0);} ); 
-      //return _.orderBy(this.products, 'name', 'asc');
+    onOrderProductList(sortOrder) {
+      console.log(sortOrder);
+
+      if(sortOrder.sortOrder == true) {
+        this.products.sort(function(a,b) {return (a.name.toUpperCase() > b.name.toUpperCase()) ? 1 : ((b.name.toUpperCase() > a.name.toUpperCase()) ? -1 : 0);} );
+      }
+      else {
+        this.products.sort(function(a,b) {return (a.name.toUpperCase() < b.name.toUpperCase()) ? 1 : ((b.name.toUpperCase() < a.name.toUpperCase()) ? -1 : 0);} );
+      }
     }
   }
 };
